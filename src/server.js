@@ -11,7 +11,16 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+app.use(express.static('public'));
 app.use(express.json());
+
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 function isPositiveInteger(value) {
   return Number.isInteger(value) && value > 0;
@@ -107,7 +116,11 @@ app.delete('/note/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Notes service listening on port ${PORT}`);
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
 });
 
+app.listen(PORT, () => {
+  console.log(`Notes service listening on port ${PORT}`);
+  console.log(`Open http://localhost:${PORT} in your browser`);
+});
